@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% from "_formhelpers.html" import render_field %}
-
+    
 <script type="text/javascript">
 jQuery(document).ready(function($) {
     //$('#m').hide()
@@ -26,24 +25,19 @@ jQuery(document).ready(function($) {
 });
 </script>
 
-<div class="hero-unit">
-    <div class="row">
-        <div class="span5">
+    <div class="container" style="padding-bottom:40px;margin-top:100px;">
+        <div class="content">
+
             <form id="signupform" method="post" action="{{url_for('account.register')}}">
-                {{ render_field(form.w) }}
-                {{ render_field(form.n) }}
-                {{ render_field(form.s, placeholder="********") }}
-                {{ render_field(form.c, placeholder="********") }}
-                <div class="actions">
-                    <input id="signup" type="submit" value="Signup" class="btn btn-primary" />
-                    <br /><br /><br /><br /><br /><br /><input id="m" type="text" name="m" />
-                </div>
+                <p><input type="text" name="w" placeholder="username" class="form-control"></p>
+                <p><input type="text" name="n" placeholder="email address" class="form-control"></p>
+                <p><input type="password" name="s" placeholder="password" class="form-control"></p>
+                <p><input type="password" name="c" placeholder="confirm password" class="form-control"></p>
+                <p><input id="signup" type="submit" value="Signup" class="btn btn-primary" /></p>
+                <p><br><br><br><br><br><br><input id="m" type="text" name="m" /></p>
             </form>
         </div>
-        <div class="span5">
-        </div>
     </div>
-</div>
 
 {% endblock %}
 

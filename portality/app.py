@@ -10,11 +10,13 @@ from portality.core import app, login_manager
 from portality.view.query import blueprint as query
 from portality.view.stream import blueprint as stream
 from portality.view.account import blueprint as account
+from portality.view.api import blueprint as api
 
 
 app.register_blueprint(query, url_prefix='/query')
 app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(account, url_prefix='/account')
+app.register_blueprint(api, url_prefix='/api')
 
 
 @login_manager.user_loader
@@ -33,14 +35,14 @@ def standard_authentication():
     remote_user = request.headers.get('REMOTE_USER', '')
     if remote_user:
         user = models.Account.pull(remote_user)
-        if user:
+        if user is not None:
             login_user(user, remember=False)
     # add a check for provision of api key
     elif 'api_key' in request.values:
         res = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
         if len(res) == 1:
             user = models.Account.pull(res[0]['_source']['id'])
-            if user:
+            if user is not None:
                 login_user(user, remember=False)
 
 
@@ -49,7 +51,7 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 @app.errorhandler(401)
-def page_not_found(e):
+def unauthorised(e):
     return render_template('401.html'), 401
         
 
@@ -58,6 +60,13 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/docs")
+def docs():
+    return render_template("docs.html")
+    
+
+# TODO: an incomplete start at a possible place to display stories
+# this will actually probably be implemented first in the API
 @app.route("/story/<sid>")
 def story(sid):
     story = models.Record.pull(sid.replace('.json',''))
